@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+
+        android:layout_height="?android:actionBarSize">
+        <RelativeLayout
+            android:id="@+id/select_layout"
+           android:visibility="gone"
+            android:background="@color/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/number"
+            android:padding="10dp"
+
+            android:layout_alignParentRight="true"
+            android:text="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#fff"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/reset"
+                android:padding="10dp"
+
+
+                android:text="Reset"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="#fff"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:background="@color/colorPrimary"
+            android:id="@+id/un_select_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:padding="10dp"
+
+                android:text="Google Keep"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="#fff"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/gridView"
+    android:padding="10dp"
+    android:layout_below="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+
+
+</RelativeLayout>
