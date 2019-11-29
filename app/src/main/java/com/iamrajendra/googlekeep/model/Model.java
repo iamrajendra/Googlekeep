@@ -1,9 +1,12 @@
-package com.iamrajendra.googlekeep;
+package com.iamrajendra.googlekeep.model;
 
 public class Model implements Comparable{
     private int id;
     private  String title;
     private boolean selected;
+
+    public Model() {
+    }
 
     public boolean isSelected() {
         return selected;
@@ -13,8 +16,8 @@ public class Model implements Comparable{
         this.selected = selected;
     }
 
-    public Model(int id, String title) {
-        this.id = id;
+    public Model( String title) {
+
         this.title = title;
     }
 

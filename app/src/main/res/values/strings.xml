@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">GoogleKeep</string>
+    <string name="app_name">Google Keep</string>
+    <string name="card_body">Greyhound disively hellp coldy wonderfully marginally for upon excluding.</string>
+    <string name="title">title</string>
+    <string name="content_here">write your content here</string>
+    <string name="upload_success">Upload finished</string>
+    <string name="upload_failure">Upload failed</string>\
+
+    <string name="download_success">Download finished</string>
+    <string name="download_failure">Download failure</string>
+    <string name="progress_uploading">Uploading…</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.iamrajendra.googlekeep.adapter;
 
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -13,22 +14,28 @@ import androidx.annotation.RequiresApi;
 import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.iamrajendra.googlekeep.Model;
+import com.iamrajendra.googlekeep.model.Model;
 import com.iamrajendra.googlekeep.R;
 import com.iamrajendra.googlekeep.adapter.draganddrop.ItemTouchHelperViewHolder;
+import com.squareup.picasso.Picasso;
+
+import static com.squareup.picasso.Picasso.*;
 
 public class CardViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener,
         ItemTouchHelperViewHolder, View.OnClickListener {
-    private TextView textView;
-    private ImageView imageView;
+    private TextView title,subtitle_text,supporting_text;
+    private ImageView avatar_image,media_image;
     private Model model;
     private Adapter adapter;
     private int position;
 
     public CardViewHolder(@NonNull View itemView) {
         super(itemView);
-        textView = itemView.findViewById(R.id.name);
-        imageView = itemView.findViewById(R.id.image);
+        title = itemView.findViewById(R.id.title_text);
+        subtitle_text = itemView.findViewById(R.id.subtitle_text);
+        supporting_text = itemView.findViewById(R.id.supporting_text);
+        avatar_image = itemView.findViewById(R.id.avatar_image);
+        media_image = itemView.findViewById(R.id.media_image);
         itemView.setOnLongClickListener(this);
         itemView.setOnClickListener(this);
 
@@ -38,7 +45,16 @@ public class CardViewHolder extends RecyclerView.ViewHolder implements View.OnLo
     public void bind(int position, final Adapter adapter) {
         this.adapter = adapter;
         this.position = position;
-        textView.setText(adapter.list.get(position).getTitle());
+        if (adapter.list.get(position).getAutherPhoto()!=null)
+        get().load(Uri.parse(adapter.list.get(position).getAutherPhoto())).centerInside().resize(100,100).into(avatar_image);
+        if (adapter.list.get(position).getPhoto()!=null) {
+            get().load(Uri.parse(adapter.list.get(position).getPhoto())).centerInside().resize(400, 200).into(media_image);
+            media_image.setVisibility(View.VISIBLE);
+        }
+        title.setText(adapter.list.get(position).getTitle());
+        subtitle_text.setText(adapter.list.get(position).getAddedBy());
+        supporting_text.setText(adapter.list.get(position).getDescription());
+        title.setText(adapter.list.get(position).getTitle());
         adapter.selectedItem.setValue(adapter.list);
 
 
@@ -51,7 +67,7 @@ public class CardViewHolder extends RecyclerView.ViewHolder implements View.OnLo
             drawable = itemView.getContext().getDrawable(R.drawable.un_select);
         }
 
-        imageView.setImageDrawable(drawable);
+        itemView.setBackground(drawable);
 
 
         itemView.setOnTouchListener(new View.OnTouchListener() {
@@ -93,6 +109,9 @@ if (!Adapter.isSelection) {
         if (Adapter.isSelection) {
             adapter.list.get(position).setSelected(adapter.list.get(position).isSelected() ? false : true);
             adapter.notifyItemChanged(position);
+        }else {
+
+            if (adapter.itemClickListener!=null)adapter.itemClickListener.onItemClick(position, adapter.list.get(position));
         }
     }
 }

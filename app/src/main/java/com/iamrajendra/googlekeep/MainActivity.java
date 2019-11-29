@@ -1,59 +1,89 @@
 package com.iamrajendra.googlekeep;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.iamrajendra.googlekeep.adapter.Adapter;
 import com.iamrajendra.googlekeep.adapter.ItemDecorationAlbumColumns;
 import com.iamrajendra.googlekeep.adapter.draganddrop.OnCustomerListChangedListener;
+import com.iamrajendra.googlekeep.adapter.draganddrop.OnItemClickListener;
 import com.iamrajendra.googlekeep.adapter.draganddrop.OnStartDragListener;
 import com.iamrajendra.googlekeep.adapter.draganddrop.SimpleItemTouchHelperCallback;
+import com.iamrajendra.googlekeep.firebase.DatabaseManger;
+import com.iamrajendra.googlekeep.firebase.GoogleAuthentication;
+import com.iamrajendra.googlekeep.model.Model;
+import com.iamrajendra.googlekeep.model.Todo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnCustomerListChangedListener,
-        OnStartDragListener, View.OnClickListener {
-private RecyclerView recyclerView;
+public class MainActivity extends BaseActivity implements OnCustomerListChangedListener,
+        OnStartDragListener, View.OnClickListener, OnItemClickListener {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private RecyclerView recyclerView;
 private TextView textViewCounter;
-private List<Model> selectedItems;
+private List<Todo> selectedItems;
     private SimpleItemTouchHelperCallback simpleItemTouchHelperCallback;
     private Adapter adapter;
+    private DatabaseManger manger;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         selectedItems = new ArrayList<>();
-
+        GoogleAuthentication.getInstance(this).getUser().observe(this, new Observer<FirebaseUser>() {
+            @Override
+            public void onChanged(FirebaseUser user) {
+                manger=    new DatabaseManger(user);
+                manger.getLiveTodoList().observe(MainActivity.this, new Observer<List<Todo>>() {
+                    @Override
+                    public void onChanged(List<Todo> todos) {
+                        adapter.resetData(todos);
+                    }
+                });
+            }
+        });
         recyclerView = findViewById(R.id.gridView);
         textViewCounter = findViewById(R.id.number);
         findViewById(R.id.reset).setOnClickListener(this);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-        recyclerView.addItemDecoration(new ItemDecorationAlbumColumns(10,4));
-        adapter = new Adapter(FakeData.getItems(),this,this);
+        findViewById(R.id.addNotes).setOnClickListener(this);
+        findViewById(R.id.delete_tv).setOnClickListener(this);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        adapter = new Adapter(new ArrayList<Todo>() {
+        }, this, this);
+        adapter.setItemClickListener(this);
 
          simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(adapter);
         ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(simpleItemTouchHelperCallback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
 
         recyclerView.setAdapter(adapter);
-        adapter.selectedItem.observe(this, new Observer<List<Model>>() {
+        adapter.selectedItem.observe(this, new Observer<List<Todo>>() {
             @Override
-            public void onChanged(List<Model> models) {
+            public void onChanged(List<Todo> models) {
                 selectedItems.clear();
                 Log.i(MainActivity.class.getSimpleName(), "onChanged: ");
 
-                for (Model model:models
+                for (Todo model:models
                      ) {
                     if (model.isSelected()){
                         selectedItems.add(model);
@@ -85,7 +115,7 @@ private List<Model> selectedItems;
     }
 
     @Override
-    public void onNoteListChanged(List<Model> customers) {
+    public void onNoteListChanged(List<Todo> customers) {
         adapter.resetData(customers);
 
     }
@@ -96,8 +126,35 @@ private List<Model> selectedItems;
     }
 
     @Override
-    public void onClick(View v) {
-        adapter.resetData(FakeData.getItems());
+    public void onBackPressed() {
+        if (selectedItems.isEmpty())
+        super.onBackPressed();
+    }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.reset:
+//                adapter.resetData(new);
+                break;
+            case R.id.addNotes:
+                Intent intent = new Intent(this, AddNotesActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.delete_tv:
+                if (selectedItems.size()==1 && selectedItems.size()!=0)
+                manger.delete(selectedItems.get(0).getKey());
+                else Toast.makeText(getApplicationContext()," Deleting collections from an Android client is not recommended. ",Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    @Override
+    public void onItemClick(int position, Object o) {
+        Todo todo = (Todo) o;
+        Log.i(TAG, "onItemClick: "+position);
+        Intent intent =  new Intent(this,UpdateNoteActivity.class);
+        intent.putExtra("key",todo.getKey());
+        startActivity(intent);
     }
 }

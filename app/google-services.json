@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "450899579580",
+    "firebase_url": "https://tosh-d2526.firebaseio.com",
+    "project_id": "tosh-d2526",
+    "storage_bucket": "tosh-d2526.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450899579580:android:dd3291cdc1cf0dde9276b9",
+        "android_client_info": {
+          "package_name": "com.iamrajendra.googlekeep"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "450899579580-4u97ial7omoaf1ua2b4cjo0bi3u1n1c1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iamrajendra.googlekeep",
+            "certificate_hash": "abf72f6f148f38de2e8104c7b20c5b1c36e30d7b"
+          }
+        },
+        {
+          "client_id": "450899579580-raitfnqbq0r9k825ll5h7hb6kkjc1lp6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqhQEQmhqK2oWOG3wKO3T_jVSrlfdRqRA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450899579580-glr1ohbcokfhtlcvhvtjrk3rk2u7tjf3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

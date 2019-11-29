@@ -1,6 +1,5 @@
 package com.iamrajendra.googlekeep.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -8,24 +7,31 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.iamrajendra.googlekeep.Model;
+import com.iamrajendra.googlekeep.adapter.draganddrop.OnItemClickListener;
+import com.iamrajendra.googlekeep.model.Model;
 import com.iamrajendra.googlekeep.R;
 import com.iamrajendra.googlekeep.adapter.draganddrop.ItemTouchHelperAdapter;
 import com.iamrajendra.googlekeep.adapter.draganddrop.OnCustomerListChangedListener;
 import com.iamrajendra.googlekeep.adapter.draganddrop.OnStartDragListener;
+import com.iamrajendra.googlekeep.model.Todo;
 
 import java.util.Collections;
 import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<CardViewHolder> implements ItemTouchHelperAdapter {
-    public List<Model> list;
-    public MutableLiveData<List<Model>> selectedItem = new MutableLiveData<>();
+    public List<Todo> list;
+    public MutableLiveData<List<Todo>> selectedItem = new MutableLiveData<>();
     public OnStartDragListener mDragStartListener;
     public OnCustomerListChangedListener mListChangedListener;
     public  static boolean isSelection;
     public  static boolean itemMoved;
+    public OnItemClickListener itemClickListener;
 
-    public Adapter(List<Model> list, OnStartDragListener mDragStartListener, OnCustomerListChangedListener mListChangedListener) {
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    public Adapter(List<Todo> list, OnStartDragListener mDragStartListener, OnCustomerListChangedListener mListChangedListener) {
         this.list = list;
         this.mDragStartListener = mDragStartListener;
         this.mListChangedListener = mListChangedListener;
@@ -36,7 +42,7 @@ public class Adapter extends RecyclerView.Adapter<CardViewHolder> implements Ite
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new CardViewHolder(LayoutInflater.from(parent.getContext()).inflate(viewType,null));
+        return new CardViewHolder(LayoutInflater.from(parent.getContext()).inflate(viewType,parent,false));
     }
 
     @Override
@@ -48,7 +54,7 @@ public class Adapter extends RecyclerView.Adapter<CardViewHolder> implements Ite
 
     @Override
     public int getItemViewType(int position) {
-        return R.layout.gird_view;
+        return R.layout.row;
     }
 
     @Override
@@ -68,12 +74,12 @@ public class Adapter extends RecyclerView.Adapter<CardViewHolder> implements Ite
 //        mListChangedListener.onNoteListChanged(list);
     }
 
-    public void resetData(List<Model> customers) {
+    public void resetData(List<Todo> customers) {
         list=reset(customers);
         notifyDataSetChanged();
     }
 
-    private List<Model> reset(List<Model> customers) {
+    private List<Todo> reset(List<Todo> customers) {
         for (int i = 0; i < customers.size(); i++) {
             customers.get(i).setSelected(false);
         }
