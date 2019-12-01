@@ -10,6 +10,7 @@ class Todo : Model {
 
     var description: String? = null
     var  key:String ? = null
+    var color:Int ? =0;
 
     constructor(title: QueryDocumentSnapshot) : super(title.get("title")!!.toString()) {
         description = title.get("description")?.toString()
@@ -17,6 +18,10 @@ class Todo : Model {
         addedBy = title.get("addedBy")?.toString()
         autherPhoto = title.get("autherPhoto")?.toString()
         uid = title.get("uid")?.toString()
+        if (title?.get("color")!=null) {
+            var lo: Long = title?.get("color") as Long;
+            color = lo?.toInt()
+        }
         key= title.id
 
 

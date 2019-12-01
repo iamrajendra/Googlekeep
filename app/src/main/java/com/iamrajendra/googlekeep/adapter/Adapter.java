@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.iamrajendra.googlekeep.adapter.draganddrop.OnItemClickListener;
-import com.iamrajendra.googlekeep.model.Model;
 import com.iamrajendra.googlekeep.R;
 import com.iamrajendra.googlekeep.adapter.draganddrop.ItemTouchHelperAdapter;
 import com.iamrajendra.googlekeep.adapter.draganddrop.OnCustomerListChangedListener;
@@ -18,7 +17,7 @@ import com.iamrajendra.googlekeep.model.Todo;
 import java.util.Collections;
 import java.util.List;
 
-public class Adapter extends RecyclerView.Adapter<CardViewHolder> implements ItemTouchHelperAdapter {
+public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ItemTouchHelperAdapter {
     public List<Todo> list;
     public MutableLiveData<List<Todo>> selectedItem = new MutableLiveData<>();
     public OnStartDragListener mDragStartListener;
@@ -41,20 +40,22 @@ public class Adapter extends RecyclerView.Adapter<CardViewHolder> implements Ite
 
     @NonNull
     @Override
-    public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new CardViewHolder(LayoutInflater.from(parent.getContext()).inflate(viewType,parent,false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final CardViewHolder holder, int position) {
-        holder.bind(position,Adapter.this);
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
+        ((CardViewHolder)holder).bind(position,Adapter.this);
 
 
     }
 
     @Override
     public int getItemViewType(int position) {
-        return R.layout.row;
+        if (list.get(position).getPhoto()!=null)
+        return R.layout.row_alpha_with_image;
+        else return R.layout.row_alpha_no_image;
     }
 
     @Override

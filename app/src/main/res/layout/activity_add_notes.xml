@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/root"
     tools:context=".AddNotesActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -23,6 +24,9 @@
         android:ems="10"
         android:focusable="auto"
         android:hint="@string/title"
+        android:background="@null"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:padding="10dp"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -32,9 +36,13 @@
     <EditText
         android:id="@+id/description"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:ems="10"
-        android:hint="@string/content_here"
+        android:padding="10dp"
+        android:textColor="#8A000000"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:background="@null"
+        android:gravity="top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,12 +51,37 @@
     <ImageView
         android:id="@+id/media"
         android:layout_width="0dp"
-        android:src="@drawable/download"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        android:src="@drawable/download"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        />
+        app:layout_constraintVertical_bias="0.17000002" />
+
+    <ImageButton
+        android:id="@+id/uploadImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.06"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/description"
+        app:layout_constraintVertical_bias="0.95"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        app:srcCompat="@drawable/ic_add_blue_24dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

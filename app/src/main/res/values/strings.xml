@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Google Keep</string>
+    <string name="app_name">do</string>
     <string name="card_body">Greyhound disively hellp coldy wonderfully marginally for upon excluding.</string>
     <string name="title">title</string>
     <string name="content_here">write your content here</string>
@@ -9,4 +9,8 @@
     <string name="download_success">Download finished</string>
     <string name="download_failure">Download failure</string>
     <string name="progress_uploading">Uploading…</string>
+    <string name="card_title">Card Title</string>
+    <string name="card_supporting_text">Card Supporting text</string>
+    <string name="select_color">Select Color</string>
+    <string name="slogon">Because we make it always done</string>
 </resources>

@@ -103,6 +103,11 @@ public class DatabaseManger {
         Map<String,Object> updates = new HashMap<>();
         updates.put("title",todo.getTitle());
         updates.put("description",todo.getDescription());
+        if (todo.getPhoto()!=null){
+            updates.put("photo",todo.getPhoto());
+        }
+        if (todo.getColor()!=0)
+        updates.put("color",todo.getColor());
         docRef.update(updates);
     }
 }

@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,7 +31,7 @@ import com.iamrajendra.googlekeep.model.Todo;
 import com.squareup.picasso.Picasso;
 
 
-public class AddNotesActivity extends AppCompatActivity {
+public class AddNotesActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = AddNotesActivity.class.getSimpleName();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user;
@@ -49,6 +50,7 @@ public class AddNotesActivity extends AppCompatActivity {
         user = GoogleAuthentication.getInstance(this).getCurrentUser();
         editTextTitle = findViewById(R.id.notes_title);
         editTextDescription = findViewById(R.id.description);
+        findViewById(R.id.uploadImage).setOnClickListener(this);
 
         // Create a new user with a first and last name
 
@@ -59,11 +61,18 @@ public class AddNotesActivity extends AppCompatActivity {
                 Log.d(TAG, "onReceive:" + intent);
 
                 switch (intent.getAction()) {
+                    case ImageUploadService.ACTION_UPLOAD:
+                        Log.i(TAG, "upload image: ");
+                        break;
                     case ImageUploadService.UPLOAD_COMPLETED:
+                        Log.i(TAG, "upload is completed: ");
+                        findViewById(R.id.progressBar).setVisibility(View.GONE);
                       Uri mDownloadUrl = Uri.parse(intent.getStringExtra(ImageUploadService.EXTRA_DOWNLOAD_URL));
                         mediaUri=mDownloadUrl;
                         ImageView imageView = (ImageView) findViewById(R.id.media);
-                        Picasso.get().load(mediaUri).centerInside().resize(200,300).into(imageView);
+                        Picasso.get().load(mediaUri).resize(600,600)
+                                .centerInside()
+                                .into(imageView);
                         imageView.setVisibility(View.VISIBLE);
                         break;
                     case ImageUploadService.UPLOAD_ERROR:
@@ -116,6 +125,8 @@ public class AddNotesActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.add_notes, menu);
+        MenuItem item = menu.findItem(R.id.upload_image);
+        item.setVisible(false);
         return true;
     }
 
@@ -162,6 +173,9 @@ public class AddNotesActivity extends AppCompatActivity {
     }
 
     private void uploadFromUri(Uri fileUri) {
+
+
+        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
         Log.d(TAG, "uploadFromUri:src:" + fileUri.toString());
 
         // Save the File URI
@@ -185,4 +199,17 @@ public class AddNotesActivity extends AppCompatActivity {
         manager.registerReceiver(mBroadcastReceiver, ImageUploadService.getIntentFilter());
     }
 
+    @Override
+    public void onClick(View v) {
+        Intent i = new Intent(
+                Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        i.setType("image/*");
+
+        i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        startActivityForResult(i, 1001);
+
+    }
 }

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item  android:id="@+id/upload_image"
         android:title="Item 1"
-        app:showAsAction="always"
+       app:showAsAction="never"
+
         android:icon="@android:drawable/ic_menu_upload"/>
 </menu>

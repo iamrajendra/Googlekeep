@@ -5,7 +5,9 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,13 +22,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iamrajendra.googlekeep.adapter.Adapter;
-import com.iamrajendra.googlekeep.adapter.ItemDecorationAlbumColumns;
 import com.iamrajendra.googlekeep.adapter.draganddrop.OnCustomerListChangedListener;
 import com.iamrajendra.googlekeep.adapter.draganddrop.OnItemClickListener;
 import com.iamrajendra.googlekeep.adapter.draganddrop.OnStartDragListener;
 import com.iamrajendra.googlekeep.adapter.draganddrop.SimpleItemTouchHelperCallback;
+import com.iamrajendra.googlekeep.dialogs.ColorDialogFragment;
 import com.iamrajendra.googlekeep.firebase.DatabaseManger;
 import com.iamrajendra.googlekeep.firebase.GoogleAuthentication;
+import com.iamrajendra.googlekeep.model.Color;
 import com.iamrajendra.googlekeep.model.Model;
 import com.iamrajendra.googlekeep.model.Todo;
 
@@ -36,6 +39,9 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements OnCustomerListChangedListener,
         OnStartDragListener, View.OnClickListener, OnItemClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
+    public ColorDialogFragment colorDialogFragment;
+    private  int position;
+
 
     private RecyclerView recyclerView;
 private TextView textViewCounter;
@@ -67,7 +73,8 @@ private List<Todo> selectedItems;
         findViewById(R.id.reset).setOnClickListener(this);
         findViewById(R.id.addNotes).setOnClickListener(this);
         findViewById(R.id.delete_tv).setOnClickListener(this);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        findViewById(R.id.change_color_tv).setOnClickListener(this);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,1));
         adapter = new Adapter(new ArrayList<Todo>() {
         }, this, this);
         adapter.setItemClickListener(this);
@@ -81,16 +88,28 @@ private List<Todo> selectedItems;
             @Override
             public void onChanged(List<Todo> models) {
                 selectedItems.clear();
+
+
                 Log.i(MainActivity.class.getSimpleName(), "onChanged: ");
 
-                for (Todo model:models
+                /*for (Todo model:models
                      ) {
                     if (model.isSelected()){
+
                         selectedItems.add(model);
                     }else {
                         selectedItems.remove(model);
                     }
 
+                }*/
+                for (int i = 0; i < models.size(); i++) {
+                    Todo model = models.get(i);
+                    if (model.isSelected()){
+position = i;
+                        selectedItems.add(model);
+                    }else {
+                        selectedItems.remove(model);
+                    }
                 }
 
                 if (selectedItems.size()>1){
@@ -145,6 +164,25 @@ private List<Todo> selectedItems;
                 if (selectedItems.size()==1 && selectedItems.size()!=0)
                 manger.delete(selectedItems.get(0).getKey());
                 else Toast.makeText(getApplicationContext()," Deleting collections from an Android client is not recommended. ",Toast.LENGTH_LONG).show();
+        break;
+            case R.id.change_color_tv:
+                 colorDialogFragment  = new ColorDialogFragment();
+                colorDialogFragment.show(getSupportFragmentManager(),"show");
+                colorDialogFragment.getLiveColor().observe(this, new Observer<Color>() {
+                    @Override
+                    public void onChanged(Color color) {
+                        Log.i(TAG, "onChanged: ");
+if (selectedItems.size()>1){
+    Toast.makeText(getApplicationContext(),"not supported more then one card",Toast.LENGTH_LONG).show();
+    return;
+}
+                        adapter.list.get(position).setColor( color.getCode());
+                        adapter.list.get(position).setSelected(false);
+//                        adapter.notifyItemChanged(position);
+                        manger.update(adapter.list.get(position));
+                    }
+                });
+                break;
         }
 
     }
